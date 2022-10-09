@@ -46,7 +46,6 @@ public class PacketHandler extends ChannelDuplexHandler {
 
                 PacketPlayInFlying flying = (PacketPlayInFlying) packet;
                 if(flying.g()) {
-                    user.data.handleMove(flying.a(), flying.b(), flying.c(), flying.f());
                     if(user.data.initialized && user.data.teleportTicks > 5) user.hitbox.recalculate(user.data.x-0.4, user.data.y, user.data.z-0.4, user.data.x+0.4, user.data.y+2.1, user.data.z+0.4, user.getPlayer().getWorld());
                 } else {
                     user.data.handleTick();
@@ -149,7 +148,7 @@ public class PacketHandler extends ChannelDuplexHandler {
     }
 
     private void call(Event event) {
-        if(!user.data.initialized || user.exempted) return;
+        if(!user.data.initialized || user.isExempted()) return;
         for(Check check : user.checks) {
             check.onEvent(event);
         }

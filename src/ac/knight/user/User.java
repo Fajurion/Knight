@@ -14,11 +14,11 @@ import org.bukkit.entity.Player;
 public class User {
 
     public UserData data;
-    private int protocolVersion = 47;
+    private int protocolVersion = ProtocolVersion.V1_8; // Last supported version
     private PacketHandler packetHandler;
     private final Player player;
     public Hitbox hitbox = new Hitbox();
-    public boolean alerts = false, kick = false, exempted = false;
+    public boolean alerts = false, exempted = false;
     public ArrayList<Check> checks = new ArrayList<>();
 
     public long lastAlert = 0;
@@ -51,6 +51,14 @@ public class User {
 
     public void uninject() {
         getCraftPlayer().getHandle().playerConnection.networkManager.channel.pipeline().remove("packet_handler");
+    }
+
+    public boolean isExempted() {
+        return exempted;
+    }
+
+    public void setExempted(boolean exempted) {
+        this.exempted = exempted;
     }
 
     public Player getPlayer() {

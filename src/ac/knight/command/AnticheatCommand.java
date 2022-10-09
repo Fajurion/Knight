@@ -34,7 +34,7 @@ public class AnticheatCommand implements CommandExecutor {
 
                 player.sendMessage(" ");
                 player.sendMessage("§7This server is §bprotected §7by §b§lKnight§7.");
-                player.sendMessage("§7Not getting §blegit flagged §7since AAC!");
+                player.sendMessage("§7Good bye, §b§lblatant §7cheaters! :)");
                 player.sendMessage("§7~§b§lUnbreathable");
                 player.sendMessage(" ");
 

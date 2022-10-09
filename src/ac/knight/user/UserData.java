@@ -1,5 +1,7 @@
 package ac.knight.user;
 
+import ac.knight.user.processor.Processor;
+import ac.knight.user.processor.impl.*;
 import ac.knight.util.MathUtil;
 import ac.knight.util.MovementUtil;
 
@@ -7,8 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.bukkit.Bukkit;
+import net.minecraft.server.v1_8_R3.Packet;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -18,8 +21,27 @@ public class UserData {
 
     public User user;
 
+    private final ArrayList<Processor> processors = new ArrayList<>();
+
     public UserData(User user) {
         this.user = user;
+
+        // Initialize processors
+        processors.add(new InitializationProcessor(this));
+        processors.add(new ActionProcessor(this));
+        processors.add(new MovementProcessor(this));
+        processors.add(new RotationProcessor(this));
+
+        // Remove empty processors
+        ArrayList<Processor> remove = new ArrayList<>();
+
+        for(Processor processor : processors) {
+            if(!processor.isActive()) {
+                remove.add(processor);
+            }
+        }
+
+        processors.removeAll(remove);
     }
 
     public double x, lastX, y, lastY, z, lastZ, velocityX, velocityY, velocityZ, teleportX, teleportY = -255, teleportZ;
@@ -33,18 +55,7 @@ public class UserData {
 
     public int velocityCount, speedLvl;
 
-    public int teleportTicks,
-            velocityTicks,
-            liquidTicks,
-            iceTicks,
-            ticksSinceLiquid,
-            ticksExisted,
-            stairTicks,
-            verticalTicks,
-            cinematicTicks,
-            airTicks,
-            groundTicks,
-            attackTicks;
+    public int teleportTicks, velocityTicks, liquidTicks, iceTicks, ticksSinceLiquid, ticksExisted, stairTicks, verticalTicks, cinematicTicks, airTicks, groundTicks, attackTicks;
 
     public boolean breakingBlock = false;
     public boolean swing = false, initialized = false;
@@ -55,6 +66,30 @@ public class UserData {
     public ArrayList<Location> lastLocations = new ArrayList<>();
 
     public final HashMap<Integer, Vector> velocity = new HashMap<>();
+
+    public Processor processor(Class<? extends Processor> clazz) {
+        for(Processor processor : processors) {
+            if(processor.getClass().equals(clazz)) {
+                return processor;
+            }
+        }
+
+        return null;
+    }
+
+    public World world() {
+        return user.getPlayer().getLocation().getWorld();
+    }
+
+    public Player player() {
+        return user.getPlayer();
+    }
+
+    public void handlePacket(Packet<?> packet) {
+        for(Processor processor : processors) {
+            processor.handlePacket(packet);
+        }
+    }
 
     public int handleVelocity(double x, double y, double z) {
 
@@ -79,86 +114,6 @@ public class UserData {
 
     public void handleTick() {
         if(initialized && user.data.teleportTicks > 5) user.hitbox.recalculate(user.data.x+user.data.deltaX-0.4, user.data.y, user.data.z+user.data.deltaZ-0.4, user.data.x+user.data.deltaX+0.4, user.data.y+2.1, user.data.z+user.data.deltaZ+0.4, user.getPlayer().getWorld());
-    }
-
-    public void handleMove(double x, double y, double z, boolean packetOnGround) {
-
-        rotation = false;
-        speedLvl = getSpeedLevel(user.getPlayer());
-        Location currentLocation = new Location(user.getPlayer().getWorld(), x, y, z);
-        Location teleportLocation = new Location(user.getPlayer().getWorld(), teleportX, teleportY, teleportZ);
-        if(teleported) {
-
-            if(currentLocation.distance(teleportLocation) < 1) {
-                teleportTicks = 0;
-                teleported = false;
-            }
-        } else {
-            teleportTicks = Math.min(10000, teleportTicks + 1);
-        }
-
-        ticksExisted = Math.min(10000, ticksExisted + 1);
-        velocityTicks = Math.min(10000, velocityTicks + 1);
-        attackTicks = Math.min(10000, attackTicks + 1);
-        lastX = this.x;
-        lastY = this.y;
-        lastZ = this.z;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        lastDeltaX = deltaX;
-        lastDeltaY = deltaY;
-        lastDeltaZ = deltaZ;
-        deltaX = this.x - lastX;
-        deltaY = this.y - lastY;
-        deltaZ = this.z - lastZ;
-        lastDeltaXZ = deltaXZ;
-        deltaXZ = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        this.packetOnGround = packetOnGround;
-        this.remainingVeloX *= 0.91;
-        this.remainingVeloZ *= 0.91;
-
-        if(!packetOnGround && ticksExisted < 8) {
-            initialized = false;
-        } else if(deltaY >= 0.0) initialized = true;
-
-        onGround = packetOnGround;
-        if(!onGround) {
-            groundTicks = 0;
-            airTicks++;
-        } else {
-            groundTicks++;
-            airTicks = 0;
-        }
-
-        if(teleportTicks > 5) {
-            if(initialized && MovementUtil.isInWater(user.getPlayer().getWorld(), user.data.x, user.data.y, user.data.z)) {
-                this.liquidTicks++;
-                this.ticksSinceLiquid = 20;
-            } else {
-                this.ticksSinceLiquid = Math.min(0, this.ticksSinceLiquid - 1);
-                this.liquidTicks = 0;
-            }
-
-            if(initialized && MovementUtil.isOnIce(x, y, z, user.getPlayer().getWorld())) {
-                this.iceTicks = 0;
-            } else {
-                this.iceTicks++;
-            }
-
-            if(initialized && MovementUtil.stairsNear(x, y, z, user.getPlayer().getWorld())) {
-                this.stairTicks = 0;
-            } else {
-                this.stairTicks++;
-            }
-
-            if(initialized && MovementUtil.isCollidedVertically(user.getPlayer().getWorld(), x, y, z)) {
-                this.verticalTicks = 0;
-            } else {
-                this.verticalTicks++;
-            }
-
-        }
     }
 
     public void handleRotation(float yaw, float pitch) {

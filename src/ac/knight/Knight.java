@@ -147,14 +147,12 @@ public class Knight extends JavaPlugin {
             getTaskManager().inject(new BetterRunnable() {
                 @Override
                 public void run() {
-                    user.getPlayer().kickPlayer("§bYou've been going too blatant in ghost queue. Turn your settings down. §7~§b§lKnight");
+                    user.getPlayer().kickPlayer("§bUnfair Advantage §8~§b§lKnight");
                     this.uninject();
                 }
             });
             return;
         }
-
-        // TODO: Bans
 
         final TextComponent alertComponent = new TextComponent(String.format("%s§b%s §7failed §b%s §8(§b%s§8) §8(§b%s§8)",
                 PREFIX, user.getPlayer().getName(), check.category, check.name, MathUtil.round(buffer)));
