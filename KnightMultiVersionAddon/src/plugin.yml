@@ -1,0 +1,7 @@
+name: KnightVersionAddon
+author: Unbreathable
+main: ac.knight.version.KnightVersion
+depend:
+  - ViaVersion
+  - Knight
+version: 1.0-STABLE

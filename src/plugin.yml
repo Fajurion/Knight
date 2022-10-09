@@ -1,0 +1,8 @@
+name: Knight
+author: Unbreathable
+version: 1.0-BULLETPROOF
+main: ac.knight.Knight
+
+commands:
+  anticheat:
+    aliases: [ac, knight]
