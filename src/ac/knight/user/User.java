@@ -6,8 +6,7 @@ import ac.knight.collision.Hitbox;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.v1_8_R3.SharedConstants;
-import org.bukkit.Bukkit;
+import ac.knight.user.processor.ProtocolVersion;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 

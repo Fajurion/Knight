@@ -1,4 +1,4 @@
-package ac.knight.user;
+package ac.knight.user.processor;
 
 public class ProtocolVersion {
 

@@ -35,7 +35,8 @@ public abstract class Processor {
         this.version = version;
     }
 
-    public abstract void handlePacket(Packet<?> packet);
+    public abstract void handleIncomingPacket(Packet<?> packet);
+    public abstract void handleOutgoingPacket(Packet<?> packet);
 
     public int getVersion() {
         return version;

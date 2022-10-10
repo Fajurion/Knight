@@ -32,6 +32,7 @@ public class PacketHandler extends ChannelDuplexHandler {
 
         try {
             Packet packet = (Packet) o;
+            user.data.handleIncomingPacket(packet);
             call(new EventIncoming(packet));
 
             if(packet instanceof PacketPlayInFlying) {
@@ -41,16 +42,7 @@ public class PacketHandler extends ChannelDuplexHandler {
                 }
                 user.data.swing = false;
 
-                user.data.lastLocations.add(user.getPlayer().getLocation());
-                if(user.data.lastLocations.size() > 20) user.data.lastLocations.remove(0);
-
                 PacketPlayInFlying flying = (PacketPlayInFlying) packet;
-                if(flying.g()) {
-                    if(user.data.initialized && user.data.teleportTicks > 5) user.hitbox.recalculate(user.data.x-0.4, user.data.y, user.data.z-0.4, user.data.x+0.4, user.data.y+2.1, user.data.z+0.4, user.getPlayer().getWorld());
-                } else {
-                    user.data.handleTick();
-                }
-                if(!user.data.initialized) return;
 
                 if(flying.h()) {
                     user.data.handleRotation(flying.d(), flying.e());
@@ -70,19 +62,6 @@ public class PacketHandler extends ChannelDuplexHandler {
             } else if(packet instanceof PacketPlayInArmAnimation) {
                 user.data.handleSwing();
                 call(new EventSwing());
-            } else if(packet instanceof PacketPlayInTransaction && !(user.data.velocityCount < 1)) {
-                if(((PacketPlayInTransaction) packet).b() >= 0) {
-                    int id = ((PacketPlayInTransaction) packet).b();
-                    if(!user.data.velocity.containsKey(id)) return;
-
-                    user.data.velocityTicks = 0;
-                    call(new EventVelocity());
-                    user.data.velocityCount--;
-                    Vector velocity = user.data.velocity.get(id);
-                    user.data.velocity.remove(id);
-                    user.data.remainingVeloX += Math.abs(velocity.getX()) + 0.03;
-                    user.data.remainingVeloZ += Math.abs(velocity.getZ()) + 0.03;
-                }
             } else if(packet instanceof PacketPlayInBlockDig) {
 
                 PacketPlayInBlockDig dig = (PacketPlayInBlockDig) packet;
@@ -94,7 +73,13 @@ public class PacketHandler extends ChannelDuplexHandler {
 
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception ex) {
+            System.out.println(" ");
+            System.out.println("Knight | INCOMING PACKET PIPELINE ERROR");
+            System.out.println("Please report this error to the developers!");
+            System.out.println(" ");
+            ex.printStackTrace();
+        }
 
     }
 
@@ -107,42 +92,15 @@ public class PacketHandler extends ChannelDuplexHandler {
 
         try {
             Packet packet = (Packet) o;
+            user.data.handleOutgoingPacket(packet);
             call(new EventOutgoing(packet));
 
-            if(packet instanceof PacketPlayOutPosition) {
-                PacketPlayOutPosition pos = (PacketPlayOutPosition) packet;
-                user.data.teleportX = (double) ReflectionUtil.getField("a", pos);
-                user.data.teleportY = (double) ReflectionUtil.getField("b", pos);
-                user.data.teleportZ = (double) ReflectionUtil.getField("c", pos);
-                user.data.teleportYaw = (float) ReflectionUtil.getField("d", pos);
-                user.data.teleportPitch = (float) ReflectionUtil.getField("e", pos);
-                user.data.teleported = true;
-            }
-            else if(packet instanceof PacketPlayOutEntityVelocity) {
-
-                PacketPlayOutEntityVelocity velocity = (PacketPlayOutEntityVelocity) packet;
-                int id = (int) ReflectionUtil.getField("a", velocity);
-                if(id != user.getPlayer().getEntityId()) return;
-                int x = (int) ReflectionUtil.getField("b", velocity);
-                int y = (int) ReflectionUtil.getField("c", velocity);
-                int z = (int) ReflectionUtil.getField("d", velocity);
-                short tid = (short) user.data.handleVelocity(x, y, z);
-                user.getCraftPlayer().getHandle().playerConnection.sendPacket(new PacketPlayOutTransaction(0, tid, false));
-                user.data.velocityCount += 1;
-            }
-            else if(packet instanceof PacketPlayOutExplosion) {
-
-                PacketPlayOutExplosion explosion = (PacketPlayOutExplosion) packet;
-                double x = (double) ReflectionUtil.getField("a", explosion);
-                double y = (double) ReflectionUtil.getField("b", explosion);
-                double z = (double) ReflectionUtil.getField("c", explosion);
-                short id = (short) (user.data.handleVelocity(x, y, z));
-                user.getCraftPlayer().getHandle().playerConnection.sendPacket(new PacketPlayOutTransaction(0, id, false));
-                user.data.velocityCount += 1;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println(" ");
+            System.out.println("Knight | OUTGOING PACKET PIPELINE ERROR");
+            System.out.println("Please report this error to the developers!");
+            System.out.println(" ");
+            ex.printStackTrace();
         }
 
     }

@@ -85,9 +85,15 @@ public class UserData {
         return user.getPlayer();
     }
 
-    public void handlePacket(Packet<?> packet) {
+    public void handleIncomingPacket(Packet<?> packet) {
         for(Processor processor : processors) {
-            processor.handlePacket(packet);
+            processor.handleIncomingPacket(packet);
+        }
+    }
+
+    public void handleOutgoingPacket(Packet<?> packet) {
+        for(Processor processor : processors) {
+            processor.handleOutgoingPacket(packet);
         }
     }
 

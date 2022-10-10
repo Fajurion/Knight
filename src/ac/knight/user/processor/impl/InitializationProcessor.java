@@ -1,6 +1,6 @@
 package ac.knight.user.processor.impl;
 
-import ac.knight.user.ProtocolVersion;
+import ac.knight.user.processor.ProtocolVersion;
 import ac.knight.user.UserData;
 import ac.knight.user.processor.Processor;
 import net.minecraft.server.v1_8_R3.Packet;
@@ -16,9 +16,8 @@ public class InitializationProcessor extends Processor {
     public boolean initialized = false;
 
     private double lastY = 0;
-
     @Override
-    public void handlePacket(Packet<?> packet) {
+    public void handleIncomingPacket(Packet<?> packet) {
         if(packet.getClass().equals(PacketPlayInFlying.class)) {
             PacketPlayInFlying flying = (PacketPlayInFlying) packet;
             ticksExisted = Math.min(10000, ticksExisted + 1);
@@ -31,5 +30,10 @@ public class InitializationProcessor extends Processor {
 
             lastY = flying.b();
         }
+    }
+
+    @Override
+    public void handleOutgoingPacket(Packet<?> packet) {
+
     }
 }
