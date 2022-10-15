@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.RotationProcessor;
 import ac.knight.util.EnumFacing;
 import net.minecraft.server.v1_8_R3.Item;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
@@ -20,6 +21,9 @@ public class ScaffoldE extends Check {
     }
 
     private int streak = 0;
+
+    @Override
+    public void init(UserData data) {}
 
     @Override
     public void onEvent(Event event) {

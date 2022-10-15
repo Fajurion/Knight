@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.impl.EventMove;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 
 public class KillauraA extends Check {
 
@@ -11,15 +12,22 @@ public class KillauraA extends Check {
         super("Killaura", "A", "Checks for keep sprint.", 5, userData);
     }
 
+    private MovementProcessor movement;
+
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) data.processor(MovementProcessor.class);
+    }
+
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
-            if(userData.deltaXZ > 0) {
+            if(movement.deltaXZ > 0) {
 
-                final double accel = Math.abs(userData.deltaXZ - userData.lastDeltaXZ);
+                final double accel = Math.abs(movement.deltaXZ - movement.lastDeltaXZ);
 
-                if(accel < 0.002 && userData.attackTicks <= 1 && userData.user.getPlayer().isSprinting() && userData.deltaXZ > 0.22) {
+                if(accel < 0.002 && movement.attackTicks <= 1 && userData.user.getPlayer().isSprinting() && movement.deltaXZ > 0.22) {
                     if(this.increaseBuffer() > 2) {
                         this.fail("acceleration", accel + "");
                     }

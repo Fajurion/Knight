@@ -6,12 +6,11 @@ import ac.knight.event.impl.EventRotation;
 import ac.knight.user.UserData;
 import ac.knight.user.processor.impl.MovementProcessor;
 import ac.knight.user.processor.impl.RotationProcessor;
-import ac.knight.util.MathUtil;
 
-public class AimA2 extends Check {
+public class AimC2 extends Check {
 
-    public AimA2(UserData userData) {
-        super("Aim", "A2", "Checks for smooth rotations. (yaw)", 20, userData);
+    public AimC2(UserData userData) {
+        super("Aim", "C2", "Checks for snappy rotations. (pitch)", 12, userData);
     }
 
     @Override
@@ -22,25 +21,24 @@ public class AimA2 extends Check {
 
     private MovementProcessor movement;
     private RotationProcessor rotation;
-    private double lastAtan2Yaw;
 
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventRotation) {
-            final double atan2Yaw = Math.atan2(rotation.deltaYaw, rotation.lastDeltaYaw);
 
-            if(MathUtil.round(atan2Yaw).equals(MathUtil.round(lastAtan2Yaw)) && rotation.deltaYaw > 0.1f /* && rotation.attackTicks < 3 TODO: FIX */ && movement.deltaXZ > 0.1) {
-                if(this.increaseBuffer() > 8)
+            if(Math.abs(rotation.deltaPitch) < 2f && Math.abs(rotation.lastDeltaPitch) > 20f && Math.abs(rotation.lastLastDeltaPitch) < 2f && movement.teleportTicks > 1) {
+
+                if(this.increaseBuffer() > 3) {
                     this.fail();
-            } else this.decreaseBuffer(0.05);
+                }
 
-            lastAtan2Yaw = atan2Yaw;
+            } else this.decreaseBuffer(0.01);
 
         }
     }
 
     @Override
     public Check newInstance(UserData data) {
-        return new AimA2(data);
+        return new AimC2(data);
     }
 }

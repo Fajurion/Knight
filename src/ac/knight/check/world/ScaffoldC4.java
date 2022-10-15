@@ -5,6 +5,7 @@ import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.event.impl.EventRotation;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.RotationProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 
 public class ScaffoldC4 extends Check {
@@ -16,13 +17,20 @@ public class ScaffoldC4 extends Check {
     private int streak = 0;
     private int pitchRotations = 0, yawRotations = 0;
 
+    private RotationProcessor rotation;
+
+    @Override
+    public void init(UserData data) {
+        rotation = (RotationProcessor) data.processor(RotationProcessor.class);
+    }
+
     @Override
     public void onEvent(Event event) {
 
         if(event instanceof EventRotation) {
-            if(Math.abs(userData.deltaPitch) > 0) {
+            if(Math.abs(rotation.deltaPitch) > 0) {
                 pitchRotations++;
-            } else if(Math.abs(userData.deltaYaw) > 0) {
+            } else if(Math.abs(rotation.deltaYaw) > 0) {
                 yawRotations++;
             }
         } else if(event instanceof EventIncoming) {

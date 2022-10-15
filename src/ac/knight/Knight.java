@@ -10,6 +10,8 @@ import ac.knight.check.network.TimerA;
 import ac.knight.check.world.*;
 import ac.knight.command.AnticheatCommand;
 import ac.knight.user.User;
+import ac.knight.user.processor.impl.InitializationProcessor;
+import ac.knight.user.processor.impl.MovementProcessor;
 import ac.knight.util.MathUtil;
 import ac.knight.util.TaskManager;
 import ac.knight.check.combat.block.BlockA;
@@ -56,9 +58,8 @@ public class Knight extends JavaPlugin {
         checks.add(new AimA2(null));
         checks.add(new AimB1(null));
         checks.add(new AimB2(null));
-        checks.add(new AimC(null));
-        checks.add(new AimD1(null));
-        checks.add(new AimD2(null));
+        checks.add(new AimC1(null));
+        checks.add(new AimC2(null));
 
         checks.add(new KillauraA(null));
         checks.add(new ReachA(null));
@@ -92,11 +93,14 @@ public class Knight extends JavaPlugin {
         taskManager.inject(() -> {
 
             for(User user : users.values()) {
-                if(!user.data.initialized) {
-                    if(user.data.teleportY == -255) continue;
+                InitializationProcessor processor = (InitializationProcessor) user.data.processor(InitializationProcessor.class);
+                MovementProcessor movementProcessor = (MovementProcessor) user.data.processor(MovementProcessor.class);
+
+                if(!processor.initialized) {
+                    if(movementProcessor.teleportY == -255) continue;
                     if(user.tpCount++ >= 5) {
-                        user.getPlayer().teleport(new Location(user.getPlayer().getWorld(), user.data.teleportX, user.data.teleportY, user.data.teleportZ,
-                                user.data.teleportYaw, user.data.teleportPitch));
+                        user.getPlayer().teleport(new Location(user.getPlayer().getWorld(), movementProcessor.teleportX, movementProcessor.teleportY, movementProcessor.teleportZ,
+                                movementProcessor.teleportYaw, movementProcessor.teleportPitch));
                         user.tpCount = 0;
                     }
                 }
@@ -116,7 +120,10 @@ public class Knight extends JavaPlugin {
     public void injectPlayer(Player player) {
         User user = new User(player);
         for(Check check : checks) {
-            user.checks.add(check.newInstance(user.data));
+            Check cloned = check.newInstance(user.data);
+            cloned.init(user.data);
+
+            user.checks.add(cloned);
         }
         users.put(player, user);
     }

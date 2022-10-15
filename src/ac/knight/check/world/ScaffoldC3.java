@@ -5,6 +5,7 @@ import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.event.impl.EventRotation;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.RotationProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 
 public class ScaffoldC3 extends Check {
@@ -15,6 +16,9 @@ public class ScaffoldC3 extends Check {
 
     private int streak = 0;
     private int rotations = 0;
+
+    @Override
+    public void init(UserData data) {}
 
     @Override
     public void onEvent(Event event) {

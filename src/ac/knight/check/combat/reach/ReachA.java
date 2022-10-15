@@ -6,6 +6,7 @@ import ac.knight.event.impl.EventMove;
 import ac.knight.Knight;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
@@ -19,17 +20,22 @@ public class ReachA extends Check {
         super("Reach", "A", "Checks for reach on players. >3.1", 8, userData);
     }
 
+    @Override
+    public void init(UserData data) {}
+
     private UserData lastTarget;
 
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
-            if(userData.attackTicks > 3
-            || lastTarget == null)
+            if(/* userData.attackTicks > 3 || TODO: FIX */
+            lastTarget == null)
                 return;
 
-            if(lastTarget.lastLocations.size() < 15) {
+            MovementProcessor targetProcessor = (MovementProcessor) lastTarget.processor(MovementProcessor.class);
+
+            if(targetProcessor.lastLocations.size() < 15) {
                 return;
             }
 
@@ -39,7 +45,7 @@ public class ReachA extends Check {
             }
 
             boolean fail = true;
-            for(Location location : lastTarget.lastLocations) {
+            for(Location location : targetProcessor.lastLocations) {
                 if(!fail) continue;
                 if(userData.user.getPlayer().getLocation().toVector().isInSphere(location.toVector(), 3.8)) {
                     fail = false;

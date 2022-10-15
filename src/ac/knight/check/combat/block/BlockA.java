@@ -14,6 +14,11 @@ public class BlockA extends Check {
         super("Block", "A", "Checks for missing packets while attacking and blocking.", 5, userData);
     }
 
+    @Override
+    public void init(UserData data) {
+
+    }
+
     private boolean interacted = false, attacked = false;
 
     @Override
@@ -21,7 +26,7 @@ public class BlockA extends Check {
         if(event instanceof EventIncoming) {
 
             EventIncoming e = (EventIncoming) event;
-            if(e.getPacket() instanceof PacketPlayInFlying && userData.attackTicks == 1) {
+            if(e.getPacket() instanceof PacketPlayInFlying /* && userData.attackTicks == 1 TODO: FIX */) {
                 interacted = attacked = false;
             } else if(e.getPacket() instanceof PacketPlayInUseEntity) {
                 PacketPlayInUseEntity.EnumEntityUseAction action = ((PacketPlayInUseEntity) e.getPacket()).a();

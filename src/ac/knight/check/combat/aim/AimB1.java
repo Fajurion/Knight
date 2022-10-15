@@ -4,6 +4,8 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventRotation;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
+import ac.knight.user.processor.impl.RotationProcessor;
 
 public class AimB1 extends Check {
 
@@ -11,17 +13,26 @@ public class AimB1 extends Check {
         super("Aim", "B1", "Checks for jitter rotations. (yaw)", 20, userData);
     }
 
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) userData.processor(MovementProcessor.class);
+        rotation = (RotationProcessor) userData.processor(RotationProcessor.class);
+    }
+
+    private MovementProcessor movement;
+    private RotationProcessor rotation;
+
     private int streak = 0;
 
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventRotation) {
 
-            if(userData.teleportTicks < 3)
+            if(movement.teleportTicks < 3)
                 return;
 
-            final boolean invalid1 = userData.deltaYaw > 0 && userData.lastDeltaYaw < 0 && userData.lastLastDeltaYaw > 0;
-            final boolean invalid2 = userData.deltaYaw < 0 && userData.lastDeltaYaw > 0 && userData.lastLastDeltaYaw < 0;
+            final boolean invalid1 = rotation.deltaYaw > 0 && rotation.lastDeltaYaw < 0 && rotation.lastLastDeltaYaw > 0;
+            final boolean invalid2 = rotation.deltaYaw < 0 && rotation.lastDeltaYaw > 0 && rotation.lastLastDeltaYaw < 0;
 
             if(invalid1 || invalid2) {
                 if(streak++ > 3) {

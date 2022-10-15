@@ -5,6 +5,7 @@ import ac.knight.event.impl.EventMove;
 import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
@@ -12,14 +13,18 @@ import org.bukkit.Location;
 
 public class GroundA extends Check {
 
-    public GroundA(UserData userData) {
-        super("Ground", "A", "Checks for an invalid onground statement.", 12, userData);
+    public GroundA(UserData movement) {
+        super("Ground", "A", "Checks for an invalid onground statement.", 12, movement);
     }
 
     private Location lastGroundLocation;
     private boolean packetGround, lastGround = true;
     private int placeTicks = 0;
 
+    @Override
+    public void init(UserData data) {
+    }
+    
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {

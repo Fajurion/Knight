@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInHeldItemSlot;
 
 public class SilentA extends Check {
@@ -13,6 +14,9 @@ public class SilentA extends Check {
     }
 
     private int lastSlot = -1;
+
+    @Override
+    public void init(UserData data) {}
 
     @Override
     public void onEvent(Event event) {

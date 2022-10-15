@@ -3,6 +3,7 @@ package ac.knight.check.movement;
 import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventMove;
+import ac.knight.user.processor.impl.MovementProcessor;
 import ac.knight.util.GhostblockData;
 import ac.knight.util.MovementUtil;
 import ac.knight.user.UserData;
@@ -17,17 +18,24 @@ public class FlightB extends Check {
 
     private ArrayList<GhostblockData> ghostblocks = new ArrayList<>();
 
+    private MovementProcessor movement;
+
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) data.processor(MovementProcessor.class);
+    }
+
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
-            if(userData.velocityTicks < 30
-                    || userData.teleportTicks < 3
-                    || userData.liquidTicks > 3)
+            if(movement.velocityTicks < 30
+                    || movement.teleportTicks < 3
+                    || movement.liquidTicks > 3)
                 return;
 
             if(!userData.user.hitbox.touchesGround) {
-
+                // TODO: Implement
             }
         }
     }

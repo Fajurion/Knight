@@ -5,6 +5,7 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPosition;
 
@@ -15,6 +16,12 @@ public class TimerA extends Check {
         setKicking(false);
     }
 
+    private MovementProcessor movement;
+
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) data.processor(MovementProcessor.class);
+    }
     private long balance = 0, lastPacket = 0, lastDelay = 0;
     private int tickCount = 0, lagStreak = 0, nonDecendStreak = 0;
 
@@ -37,7 +44,7 @@ public class TimerA extends Check {
                 lastPacket = System.currentTimeMillis();
 
                 if(delay > 1000000
-                || userData.teleportTicks <= 5) {
+                || movement.teleportTicks <= 5) {
                     return;
                 }
 

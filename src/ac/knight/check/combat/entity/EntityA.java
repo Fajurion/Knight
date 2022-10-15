@@ -23,6 +23,7 @@ public class EntityA extends Check {
     @Override
     public void onEvent(Event event) {
 
+        /* TODO: Migrate (maybe later on)
         if(event instanceof EventRotation) {
 
             if(userData.deltaYaw > 50 && bot == null) {
@@ -66,10 +67,17 @@ public class EntityA extends Check {
             }
 
         }
+
+         */
     }
 
     @Override
     public Check newInstance(UserData data) {
         return new EntityA(data);
+    }
+
+    @Override
+    public void init(UserData data) {
+
     }
 }

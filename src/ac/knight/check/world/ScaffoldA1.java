@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 
 public class ScaffoldA1 extends Check {
@@ -11,6 +12,9 @@ public class ScaffoldA1 extends Check {
     public ScaffoldA1(UserData userData) {
         super("Scaffold", "A", "Checks for an invalid hitvector.", 4, userData);
     }
+
+    @Override
+    public void init(UserData data) {}
 
     @Override
     public void onEvent(Event event) {

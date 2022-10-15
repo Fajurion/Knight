@@ -4,6 +4,9 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventMove;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.InitializationProcessor;
+import ac.knight.user.processor.impl.MovementProcessor;
+import ac.knight.user.processor.impl.RotationProcessor;
 import ac.knight.util.BlockUtil;
 import org.bukkit.util.Vector;
 
@@ -15,21 +18,32 @@ public class SpeedB1 extends Check {
 
     private double lastAngle = 0;
 
+    private MovementProcessor movement;
+    private InitializationProcessor initialization;
+    private RotationProcessor rotation;
+
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) data.processor(MovementProcessor.class);
+        initialization = (InitializationProcessor) data.processor(InitializationProcessor.class);
+        rotation = (RotationProcessor) data.processor(RotationProcessor.class);
+    }
+
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
             if (userData.isFlying()
-                    || userData.teleportTicks < 3
-                    || userData.ticksExisted < 40
-                    || userData.deltaXZ < 0.1
+                    || movement.teleportTicks < 3
+                    || initialization.ticksExisted < 40
+                    || movement.deltaXZ < 0.1
                     || BlockUtil.isVehicleNearby(userData.user.getPlayer())) return;
 
-            double accel = Math.abs(userData.deltaXZ - userData.lastDeltaXZ);
+            double accel = Math.abs(movement.deltaXZ - movement.lastDeltaXZ);
             accel *= 1.0E10;
 
-            Vector walkingDirection = new Vector(userData.deltaX, 0, userData.deltaZ);
-            Vector direction = userData.getDirection(userData.yaw, 0);
+            Vector walkingDirection = new Vector(movement.deltaX, 0, movement.deltaZ);
+            Vector direction = userData.getDirection(rotation.yaw, 0);
             double angle = walkingDirection.angle(direction);
             double angleDiff = Math.abs(angle - lastAngle);
 

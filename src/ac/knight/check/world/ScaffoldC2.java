@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.RotationProcessor;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 
 public class ScaffoldC2 extends Check {
@@ -13,6 +14,13 @@ public class ScaffoldC2 extends Check {
     }
 
     private int streak = 0;
+
+    private RotationProcessor rotation;
+
+    @Override
+    public void init(UserData data) {
+        rotation = (RotationProcessor) data.processor(RotationProcessor.class);
+    }
 
     @Override
     public void onEvent(Event event) {
@@ -24,8 +32,8 @@ public class ScaffoldC2 extends Check {
 
                 if(packet.a().getX() != -1 && packet.a().getY() != -1) {
 
-                    if(Math.abs(userData.deltaPitch) == 0 && Math.abs(userData.lastDeltaPitch) == 0 && Math.abs(userData.lastLastDeltaPitch) == 0
-                    && Math.abs(userData.deltaYaw) > 5) {
+                    if(Math.abs(rotation.deltaPitch) == 0 && Math.abs(rotation.lastDeltaPitch) == 0 && Math.abs(rotation.lastLastDeltaPitch) == 0
+                    && Math.abs(rotation.deltaYaw) > 5) {
                         if(streak++ > 5) {
                             if(this.increaseBuffer() > 3) {
                                 this.fail("streak", streak + "");

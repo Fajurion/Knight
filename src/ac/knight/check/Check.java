@@ -69,6 +69,8 @@ public abstract class Check {
 
     public abstract Check newInstance(UserData data);
 
+    public abstract void init(UserData data);
+
     public int getTicks(User user, int ticks) {
         return (int) (ticks + Math.round((user.getCraftPlayer().getHandle().ping / 50.0)));
     }

@@ -4,6 +4,7 @@ import ac.knight.check.Check;
 import ac.knight.event.impl.EventMove;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.MovementProcessor;
 import org.bukkit.Material;
 
 public class FlightA extends Check {
@@ -13,21 +14,28 @@ public class FlightA extends Check {
         setKicking(false);
     }
 
+    private MovementProcessor movement;
+
+    @Override
+    public void init(UserData data) {
+        movement = (MovementProcessor) data.processor(MovementProcessor.class);
+    }
+
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
-            if(userData.velocityTicks < 3
-                    || userData.teleportTicks < 3
-                    || userData.liquidTicks > 3
+            if(movement.velocityTicks < 3
+                    || movement.teleportTicks < 3
+                    || movement.liquidTicks > 3
                     || userData.isFlying()
                     || userData.user.hitbox.climbable
                     || userData.user.hitbox.slimeBlocks
                     || userData.user.hitbox.containsSolidBlocks)
                 return;
 
-            if(!userData.packetOnGround && !userData.user.getPlayer().isDead() && Math.abs(userData.deltaY - userData.lastDeltaY) < 0.01 && userData.deltaY > -3) {
-                if(userData.user.getProtocolVersion() > 47 && userData.iceTicks < 10) {
+            if(!movement.packetOnGround && !userData.user.getPlayer().isDead() && Math.abs(movement.deltaY - movement.lastDeltaY) < 0.01 && movement.deltaY > -3) {
+                if(userData.user.getProtocolVersion() > 47 && movement.iceTicks < 10) {
                     return;
                 }
                 if(this.increaseBuffer() > 3) {
