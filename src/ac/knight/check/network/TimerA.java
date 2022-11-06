@@ -22,8 +22,8 @@ public class TimerA extends Check {
     public void init(UserData data) {
         movement = (MovementProcessor) data.processor(MovementProcessor.class);
     }
-    private long balance = 0, lastPacket = 0, lastDelay = 0;
-    private int tickCount = 0, lagStreak = 0, nonDecendStreak = 0;
+    private long balance = 0, lastPacket = 0;
+    private int tickCount = 0;
 
     @Override
     public void onEvent(Event event) {
@@ -56,24 +56,7 @@ public class TimerA extends Check {
                 balance += 50 - delay;
                 boolean lagging = delay <= 5;
 
-                if(balance < -2000) {
-                    balance = 0;
-                }
-
-                if(balance > 50 && !lagging) {
-                    if(lagStreak++ > 50) {
-                        if(this.increaseBuffer() > 2) {
-                            this.fail("type", "streak", "balance", balance + "", "streak", lagStreak + "");
-                            lagStreak = 0;
-                            balance = 0;
-                        }
-                    }
-                } else {
-                    nonDecendStreak = 0;
-                    lagStreak = 0;
-                }
-
-                if((balance > 2000) && !lagging) {
+                if((balance > 1000) && !lagging) {
 
                     if(this.increaseBuffer() > 2) {
                         this.fail("type", "high", "balance", balance + "", "delay", delay + "");
@@ -82,7 +65,14 @@ public class TimerA extends Check {
 
                 } else this.decreaseBuffer(0.001);
 
-                lastDelay = delay;
+                if((balance < -20000) && !lagging) {
+
+                    if(this.increaseBuffer() > 2) {
+                        this.fail("type", "low", "balance", balance + "", "delay", delay + "");
+                    }
+                    balance = 0;
+
+                }
 
             }
 

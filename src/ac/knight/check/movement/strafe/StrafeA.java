@@ -1,11 +1,10 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.strafe;
 
 import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventMove;
 import ac.knight.user.UserData;
 import ac.knight.user.processor.impl.MovementProcessor;
-import ac.knight.user.processor.impl.RotationProcessor;
 import ac.knight.util.BlockUtil;
 
 public class StrafeA extends Check {

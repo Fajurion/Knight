@@ -47,6 +47,7 @@ public class UserData {
 
         // Register processors
         for(Processor processor : toRegister) {
+            processor.data = this;
             processors.put(processor.getClass().getSimpleName(), processor);
         }
 
@@ -72,6 +73,7 @@ public class UserData {
 
     public void handleOutgoingPacket(Packet<?> packet) {
         for(Processor processor : processors.values()) {
+            processor.data = this;
             processor.handleOutgoingPacket(packet);
         }
     }

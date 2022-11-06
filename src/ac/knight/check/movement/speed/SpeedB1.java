@@ -1,4 +1,4 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.speed;
 
 import ac.knight.check.Check;
 import ac.knight.event.Event;
@@ -10,11 +10,13 @@ import ac.knight.user.processor.impl.RotationProcessor;
 import ac.knight.util.BlockUtil;
 import org.bukkit.util.Vector;
 
-public class SpeedB2 extends Check {
+public class SpeedB1 extends Check {
 
-    public SpeedB2(UserData userData) {
-        super("Speed", "B2", "Checks for horizontal acceleration/deceleration modification.", 12, userData);
+    public SpeedB1(UserData userData) {
+        super("Speed", "B1", "Checks for horizontal acceleration/deceleration modification.", 12, userData);
     }
+
+    private double lastAngle = 0;
 
     private MovementProcessor movement;
     private InitializationProcessor initialization;
@@ -26,6 +28,7 @@ public class SpeedB2 extends Check {
         initialization = (InitializationProcessor) data.processor(InitializationProcessor.class);
         rotation = (RotationProcessor) data.processor(RotationProcessor.class);
     }
+
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
@@ -39,18 +42,25 @@ public class SpeedB2 extends Check {
             double accel = Math.abs(movement.deltaXZ - movement.lastDeltaXZ);
             accel *= 1.0E10;
 
-            if(rotation.deltaYaw > 1.5f && accel < 1.0) {
+            Vector walkingDirection = new Vector(movement.deltaX, 0, movement.deltaZ);
+            Vector direction = userData.getDirection(rotation.yaw, 0);
+            double angle = walkingDirection.angle(direction);
+            double angleDiff = Math.abs(angle - lastAngle);
+
+            if(angleDiff > 0.05 && accel < 1.0) {
                 if(this.increaseBuffer() > 3) {
-                    this.fail("deltaYaw", rotation.deltaYaw + "", "accel", accel + "");
+                    this.fail("angle", angle + "", "accel", accel + "");
                 }
             } else this.decreaseBuffer(0.01);
+
+            lastAngle = angle;
 
         }
     }
 
     @Override
     public Check newInstance(UserData data) {
-        return new SpeedB2(data);
+        return new SpeedB1(data);
     }
 
 }

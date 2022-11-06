@@ -6,6 +6,7 @@ import ac.knight.event.impl.EventMove;
 import ac.knight.Knight;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
+import ac.knight.user.processor.impl.ActionProcessor;
 import ac.knight.user.processor.impl.MovementProcessor;
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
@@ -20,8 +21,12 @@ public class ReachA extends Check {
         super("Reach", "A", "Checks for reach on players. >3.1", 8, userData);
     }
 
+    private ActionProcessor action;
+
     @Override
-    public void init(UserData data) {}
+    public void init(UserData data) {
+        action = (ActionProcessor) data.processor(ActionProcessor.class);
+    }
 
     private UserData lastTarget;
 
@@ -29,7 +34,7 @@ public class ReachA extends Check {
     public void onEvent(Event event) {
         if(event instanceof EventMove) {
 
-            if(/* userData.attackTicks > 3 || TODO: FIX */
+            if(action.attackTicks > 3 ||
             lastTarget == null)
                 return;
 

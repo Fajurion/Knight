@@ -1,4 +1,4 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.speed;
 
 import ac.knight.check.Check;
 import ac.knight.event.Event;

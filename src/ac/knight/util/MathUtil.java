@@ -1,5 +1,8 @@
 package ac.knight.util;
 
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
+
 import java.util.ArrayList;
 
 public class MathUtil {

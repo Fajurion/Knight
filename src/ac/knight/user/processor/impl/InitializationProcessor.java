@@ -18,14 +18,12 @@ public class InitializationProcessor extends Processor {
     private double lastY = 0;
     @Override
     public void handleIncomingPacket(Packet<?> packet) {
-        if(packet.getClass().equals(PacketPlayInFlying.class)) {
+        if(packet instanceof PacketPlayInFlying) {
             PacketPlayInFlying flying = (PacketPlayInFlying) packet;
             ticksExisted = Math.min(10000, ticksExisted + 1);
 
-            if(flying.g()) {
-                if(!flying.g() && ticksExisted < 8) {
-                    initialized = false;
-                } else if(flying.b() - lastY >= 0.0) initialized = true;
+            if(flying.g() && flying.b() - lastY >= 0.0 && ticksExisted > 10) {
+                initialized = true;
             }
 
             lastY = flying.b();

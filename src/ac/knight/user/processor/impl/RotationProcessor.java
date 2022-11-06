@@ -16,7 +16,7 @@ public class RotationProcessor extends Processor {
 
     @Override
     public void handleIncomingPacket(Packet<?> packet) {
-        if(packet.getClass().equals(PacketPlayInFlying.class)) {
+        if(packet instanceof PacketPlayInFlying) {
             PacketPlayInFlying flying = (PacketPlayInFlying) packet;
             if(!flying.h()) return;
 

@@ -1,11 +1,10 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.gravity;
 
 import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.event.impl.EventMove;
 import ac.knight.user.processor.impl.MovementProcessor;
 import ac.knight.util.GhostblockData;
-import ac.knight.util.MovementUtil;
 import ac.knight.user.UserData;
 
 import java.util.ArrayList;

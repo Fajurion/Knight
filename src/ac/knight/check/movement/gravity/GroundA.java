@@ -1,12 +1,10 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.gravity;
 
 import ac.knight.event.impl.EventIncoming;
 import ac.knight.event.impl.EventMove;
 import ac.knight.check.Check;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
-import ac.knight.user.processor.impl.MovementProcessor;
-import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import org.bukkit.Location;

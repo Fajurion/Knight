@@ -1,11 +1,10 @@
-package ac.knight.check.movement;
+package ac.knight.check.movement.gravity;
 
 import ac.knight.check.Check;
 import ac.knight.event.impl.EventMove;
 import ac.knight.event.Event;
 import ac.knight.user.UserData;
 import ac.knight.user.processor.impl.MovementProcessor;
-import org.bukkit.Material;
 
 public class FlightA extends Check {
 

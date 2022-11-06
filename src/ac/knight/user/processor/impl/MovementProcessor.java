@@ -37,7 +37,7 @@ public class MovementProcessor extends Processor {
 
     @Override
     public void handleIncomingPacket(Packet<?> packet) {
-        if(packet.getClass().equals(PacketPlayInFlying.class)) {
+        if(packet instanceof PacketPlayInFlying) {
             PacketPlayInFlying flying = (PacketPlayInFlying) packet;
             boolean initialized = ((InitializationProcessor) data.processor(InitializationProcessor.class)).initialized;
 
@@ -156,7 +156,7 @@ public class MovementProcessor extends Processor {
             int x = (int) ReflectionUtil.getField("b", velocity);
             int y = (int) ReflectionUtil.getField("c", velocity);
             int z = (int) ReflectionUtil.getField("d", velocity);
-            handleVelocity(x, y, z);
+            handleVelocity(x / 8000.0, y / 8000.0, z / 8000.0);
         }
         else if(packet instanceof PacketPlayOutExplosion) {
 

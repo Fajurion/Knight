@@ -4,7 +4,13 @@ import ac.knight.check.Check;
 import ac.knight.check.combat.aim.*;
 import ac.knight.check.combat.killaura.KillauraA;
 import ac.knight.check.combat.reach.ReachA;
-import ac.knight.check.movement.*;
+import ac.knight.check.movement.gravity.*;
+import ac.knight.check.movement.speed.SpeedA;
+import ac.knight.check.movement.speed.SpeedB1;
+import ac.knight.check.movement.speed.SpeedB2;
+import ac.knight.check.movement.strafe.SprintA;
+import ac.knight.check.movement.strafe.StrafeA;
+import ac.knight.check.movement.velocity.VelocityHorizontal;
 import ac.knight.check.network.SilentA;
 import ac.knight.check.network.TimerA;
 import ac.knight.check.world.*;
@@ -76,6 +82,8 @@ public class Knight extends JavaPlugin {
         checks.add(new GroundA(null));
         checks.add(new GravityA(null));
 
+        checks.add(new VelocityHorizontal(null));
+
         checks.add(new ScaffoldA1(null));
         checks.add(new ScaffoldA2(null));
         checks.add(new ScaffoldB(null));
@@ -84,6 +92,7 @@ public class Knight extends JavaPlugin {
         checks.add(new ScaffoldC3(null));
         checks.add(new ScaffoldC4(null));
         checks.add(new ScaffoldE(null));
+        checks.add(new ScaffoldF(null));
 
         checks.add(new TimerA(null));
         checks.add(new SilentA(null));
